@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 
 function Home() {
   const [expenses, setExpenses] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   useEffect(() => {
     fetchExpenses();
@@ -29,7 +30,7 @@ function Home() {
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, delete it!",
       });
-  
+
       if (result.isConfirmed) {
         const response = await axios.delete(
           `http://localhost:3000/deleteExpence/${id}`
@@ -45,13 +46,16 @@ function Home() {
       console.log(err);
     }
   };
-  
 
   return (
     <>
       {/* category filter */}
       <div className="flex justify-center items-center mt-4">
-        <select className="border border-black p-3 rounded lg:inline-block w-1/3">
+        <select
+          className="border border-black p-3 rounded lg:inline-block w-1/3"
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
           <option value="">Select category</option>
           <option value="Food">Food</option>
           <option value="Household">Household</option>
@@ -70,35 +74,41 @@ function Home() {
           gridGap: "10px",
         }}
       >
-        {expenses.map((expense) => (
-          <div
-            key={expense.id}
-            className="bg-white m-10 font-semibold text-center rounded-3xl border shadow-lg p-10 max-w-xs"
-          >
-            <h1 className="text-lg text-gray-700">{expense.title}</h1>
-            <h3 className="text-sm text-gray-400">
-              Category: {expense.category}
-            </h3>
-            <p className="text-xs text-gray-500 mt-4">{expense.description}</p>
-            <div className="text-xs text-gray-400 mt-4">
-              Date: {expense.date}
+        {expenses
+          .filter((expense) =>
+            selectedCategory ? expense.category === selectedCategory : true
+          )
+          .map((expense) => (
+            <div
+              key={expense.id}
+              className="bg-white m-10 font-semibold text-center rounded-3xl border shadow-lg p-10 max-w-xs"
+            >
+              <h1 className="text-lg text-gray-700">{expense.title}</h1>
+              <h3 className="text-sm text-gray-400">
+                Category: {expense.category}
+              </h3>
+              <p className="text-xs text-gray-500 mt-4">
+                {expense.description}
+              </p>
+              <div className="text-xs text-gray-400 mt-4">
+                Date: {expense.date}
+              </div>
+              <div className="flex justify-center space-x-4 mt-8">
+                <a
+                  href={`/editExpense/${expense.id}`}
+                  className="bg-indigo-600 px-4 py-2 rounded-3xl text-gray-100 font-semibold uppercase tracking-wide text-xs cursor-pointer"
+                >
+                  edit
+                </a>
+                <a
+                  onClick={() => handleDelete(expense.id)}
+                  className="bg-indigo-600 px-4 py-2 rounded-3xl text-gray-100 font-semibold uppercase tracking-wide text-xs cursor-pointer"
+                >
+                  delete
+                </a>
+              </div>
             </div>
-            <div className="flex justify-center space-x-4 mt-8">
-              <a
-                href={`/editExpense/${expense.id}`}
-                className="bg-indigo-600 px-4 py-2 rounded-3xl text-gray-100 font-semibold uppercase tracking-wide text-xs cursor-pointer"
-              >
-                edit
-              </a>
-              <a
-                onClick={() => handleDelete(expense.id)}
-                className="bg-indigo-600 px-4 py-2 rounded-3xl text-gray-100 font-semibold uppercase tracking-wide text-xs cursor-pointer"
-              >
-                delete
-              </a>
-            </div>
-          </div>
-        ))}
+          ))}
       </div>
     </>
   );
