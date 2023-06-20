@@ -109,6 +109,19 @@ app.delete("/deleteExpence/:id", (req, res) => {
   });
 });
 
+// get expences summary according to category
+app.get("/getExpencesSummary", (req, res) => {
+  const getExpencesSummary = `SELECT category, SUM(amount) AS total FROM expences GROUP BY category`;
+  db.all(getExpencesSummary, (err, rows) => {
+    if (err) {
+      console.log(err);
+      res.status(500).json({ error: "An error occurred" });
+    } else {
+      res.json({ expencesSummary: rows });
+    }
+  });
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}.`);
 });

@@ -31,6 +31,12 @@ function NavBar() {
               Home
             </a>
             <a
+              href="/dashboard"
+              className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+            >
+              Dashboard
+            </a>
+            <a
               href="/createExpence"
               className="block border p-3 rounded mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
             >
