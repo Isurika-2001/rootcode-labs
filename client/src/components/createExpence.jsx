@@ -1,28 +1,65 @@
 import React from "react";
+import { useState } from "react";
+import axios from "axios";
 
 function CreateExpence() {
+  const [inputs, setInputs] = useState({
+    title: "",
+    description: "",
+    category: "",
+    date: "",
+    amount: "",
+  });
+
+  const handleChange = (e) => {
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/createExpence",
+        inputs
+      );
+      if (response.data.message === "Expence created") {
+        console.log(response.data.message);
+      } else {
+        console.log(response.data.message);
+      }
+    } catch (err) {
+      alert(err);
+    }
+    console.log(inputs);
+  };
+
   return (
     <>
-      <div class="mt-20 mx-auto w-1/2">
-        <h1 class="text-2xl font-semibold text-center text-gray-600 mb-10">
+      <div className="mt-20 mx-auto w-1/2">
+        <h1 className="text-2xl font-semibold text-center text-gray-600 mb-10">
           Create Expense
         </h1>
         <form>
-          <div class="-mx-3 m-10 flex flex-wrap">
-            <div class="w-full px-3 sm:w-1/2">
-              <div class="mb-5">
+          <div className="-mx-3 m-10 flex flex-wrap">
+            <div className="w-full px-3 sm:w-1/2">
+              <div className="mb-5">
                 <input
                   type="text"
                   name="title"
                   id="title"
+                  onChange={handleChange}
                   placeholder="Title"
-                  class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium outline-none focus:border-[#6A64F1] focus:shadow-md text-gray-600"
+                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium outline-none focus:border-[#6A64F1] focus:shadow-md text-gray-600"
                 />
               </div>
             </div>
-            <div class="w-full px-3 sm:w-1/2">
-              <div class="mb-5">
-                <select className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-gray-600 outline-none focus:border-[#6A64F1] focus:shadow-md">
+            <div className="w-full px-3 sm:w-1/2">
+              <div className="mb-5">
+                <select
+                  name="category" // Added the name attribute
+                  onChange={handleChange}
+                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-gray-600 outline-none focus:border-[#6A64F1] focus:shadow-md"
+                >
                   <option value="">Select category</option>
                   <option value="food">Food</option>
                   <option value="travel">Travel</option>
@@ -32,36 +69,39 @@ function CreateExpence() {
               </div>
             </div>
           </div>
-          <div class="mb-5">
+          <div className="mb-5">
             <textarea
+              onChange={handleChange}
               type="text"
               name="description"
               id="description"
               placeholder="Description"
               min="0"
-              class="w-full appearance-none rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-gray-600 outline-none focus:border-[#6A64F1] focus:shadow-md"
+              className="w-full appearance-none rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-gray-600 outline-none focus:border-[#6A64F1] focus:shadow-md"
             />
           </div>
 
-          <div class="-mx-3 flex flex-wrap">
-            <div class="w-full px-3 sm:w-1/2">
-              <div class="mb-5">
+          <div className="-mx-3 flex flex-wrap">
+            <div className="w-full px-3 sm:w-1/2">
+              <div className="mb-5">
                 <input
+                  onChange={handleChange}
                   type="date"
                   name="date"
                   id="date"
-                  class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-gray-600 outline-none focus:border-[#6A64F1] focus:shadow-md"
+                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-gray-600 outline-none focus:border-[#6A64F1] focus:shadow-md"
                 />
               </div>
             </div>
-            <div class="w-full px-3 sm:w-1/2">
-              <div class="mb-5">
+            <div className="w-full px-3 sm:w-1/2">
+              <div className="mb-5">
                 <input
+                  onChange={handleChange}
                   type="text"
-                  name="ammount"
-                  id="ammount"
-                  placeholder="Amount Spent"
-                  class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-gray-600 outline-none focus:border-[#6A64F1] focus:shadow-md"
+                  name="amount"
+                  id="amount"
+                  placeholder="Amount Spent (LKR)"
+                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-gray-600 outline-none focus:border-[#6A64F1] focus:shadow-md"
                 />
               </div>
             </div>
@@ -71,7 +111,10 @@ function CreateExpence() {
             <button className="hover:shadow-form ml-5 rounded-md bg-red-500 py-3 px-8 text-center text-base font-semibold text-white outline-none">
               Cancel
             </button>
-            <button className="hover:shadow-form ml-5 rounded-md bg-indigo-600 py-3 px-8 text-center text-base font-semibold text-white outline-none">
+            <button
+              onClick={handleSubmit}
+              className="hover:shadow-form ml-5 rounded-md bg-indigo-600 py-3 px-8 text-center text-base font-semibold text-white outline-none"
+            >
               Submit
             </button>
           </div>
