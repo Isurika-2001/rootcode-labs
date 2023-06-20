@@ -18,9 +18,9 @@ function CreateExpence() {
     const fetchExpenseDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/getExpence/${id}` // Corrected the URL spelling
+          `http://localhost:3000/getExpence/${id}`
         );
-        const expense = response.data.expence; // Extract the expense data from the response
+        const expense = response.data.expence;
         setInputs(expense);
       } catch (err) {
         console.log(err);
