@@ -1,18 +1,68 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 function Home() {
+  const [expenses, setExpenses] = useState([]);
+
+  useEffect(() => {
+    fetchExpenses();
+  }, []);
+
+  const fetchExpenses = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/getExpences");
+      setExpenses(response.data.expences);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      });
+  
+      if (result.isConfirmed) {
+        const response = await axios.delete(
+          `http://localhost:3000/deleteExpence/${id}`
+        );
+        if (response.data.message === "Expense deleted") {
+          Swal.fire("Deleted!", "Your expense has been deleted.", "success");
+          fetchExpenses();
+        } else {
+          Swal.fire("Error!", response.data.message, "error");
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
+
   return (
     <>
+      {/* category filter */}
       <div className="flex justify-center items-center mt-4">
         <select className="border border-black p-3 rounded lg:inline-block w-1/3">
-          <option value="all">Select category</option>
-          <option value="food">Food</option>
-          <option value="travel">Travel</option>
-          <option value="shopping">Shopping</option>
-          <option value="others">Others</option>
+          <option value="">Select category</option>
+          <option value="Food">Food</option>
+          <option value="Household">Household</option>
+          <option value="Social Life">Social Life</option>
+          <option value="Transportation">Transportation</option>
+          <option value="Health">Health</option>
+          <option value="Miscellaneous">Miscellaneous</option>
         </select>
       </div>
 
+      {/* expenses card */}
       <div
         style={{
           display: "grid",
@@ -20,26 +70,35 @@ function Home() {
           gridGap: "10px",
         }}
       >
-        <div className="bg-white m-10 font-semibold text-center rounded-3xl border shadow-lg p-10 max-w-xs">
-          <h1 className="text-lg text-gray-700">Spent at keels</h1>
-          <h3 className="text-sm text-gray-400">Category</h3>
-          <p className="text-xs text-gray-500 mt-4">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </p>
-          <div className="text-xs text-gray-400 mt-4">Date: June 20, 2023</div>
-          <div className="flex justify-center space-x-4 mt-8">
-            <a
-              href="/createExpence"
-              className="bg-indigo-600 px-4 py-2 rounded-3xl text-gray-100 font-semibold uppercase tracking-wide text-xs"
-            >
-              edit
-            </a>
-            <a className="bg-indigo-600 px-4 py-2 rounded-3xl text-gray-100 font-semibold uppercase tracking-wide text-xs">
-              delete
-            </a>
+        {expenses.map((expense) => (
+          <div
+            key={expense.id}
+            className="bg-white m-10 font-semibold text-center rounded-3xl border shadow-lg p-10 max-w-xs"
+          >
+            <h1 className="text-lg text-gray-700">{expense.title}</h1>
+            <h3 className="text-sm text-gray-400">
+              Category: {expense.category}
+            </h3>
+            <p className="text-xs text-gray-500 mt-4">{expense.description}</p>
+            <div className="text-xs text-gray-400 mt-4">
+              Date: {expense.date}
+            </div>
+            <div className="flex justify-center space-x-4 mt-8">
+              <a
+                href={`/editExpense/${expense.id}`}
+                className="bg-indigo-600 px-4 py-2 rounded-3xl text-gray-100 font-semibold uppercase tracking-wide text-xs cursor-pointer"
+              >
+                edit
+              </a>
+              <a
+                onClick={() => handleDelete(expense.id)}
+                className="bg-indigo-600 px-4 py-2 rounded-3xl text-gray-100 font-semibold uppercase tracking-wide text-xs cursor-pointer"
+              >
+                delete
+              </a>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </>
   );

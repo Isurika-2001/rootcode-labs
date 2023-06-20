@@ -4,7 +4,7 @@ exports.expenceValidation = (data) => {
   const schema = Joi.object({
     title: Joi.string().required(),
     category: Joi.string()
-      .valid("food", "travel", "shopping", "others")
+      .valid("Food", "Household", "Social Life", "Transportation", "Health", "Miscellaneous")
       .required(),
     description: Joi.string().optional(),
     amount: Joi.number().required(),

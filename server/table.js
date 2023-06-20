@@ -36,22 +36,34 @@ const createTable = (db) => {
     if (err) {
       console.log(err);
     } else {
-      // Insert sample data
-      const insertSampleData = `INSERT INTO expences (title, date, category, amount, description) VALUES (?, ?, ?, ?, ?)`;
-      sampleData.forEach((data) => {
-        db.run(insertSampleData, [
-          data.title,
-          data.date,
-          data.category,
-          data.amount,
-          data.description,
-        ], (err) => {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log("Sample data inserted successfully");
-          }
-        });
+      // Clear table
+      const clearExpenses = `DELETE FROM expences`;
+      db.run(clearExpenses, (err) => {
+        if (err) {
+          console.log(err);
+        } else {
+          // Insert sample data
+          const insertSampleData = `INSERT INTO expences (title, date, category, amount, description) VALUES (?, ?, ?, ?, ?)`;
+          sampleData.forEach((data) => {
+            db.run(
+              insertSampleData,
+              [
+                data.title,
+                data.date,
+                data.category,
+                data.amount,
+                data.description,
+              ],
+              (err) => {
+                if (err) {
+                  console.log(err);
+                } else {
+                  console.log("Sample data inserted successfully");
+                }
+              }
+            );
+          });
+        }
       });
     }
   });
