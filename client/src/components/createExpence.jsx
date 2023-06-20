@@ -70,7 +70,7 @@ function CreateExpence() {
   return (
     <div className="mt-20 mx-auto w-1/2">
       <h1 className="text-2xl font-semibold text-center text-gray-600 mb-10">
-        Create Expense
+        {id ? "Update Expense" : "Create Expense"}
       </h1>
       <form>
         <div className="-mx-3 m-10 flex flex-wrap">

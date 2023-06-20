@@ -41,6 +41,12 @@ function Home() {
         } else {
           Swal.fire("Error!", response.data.message, "error");
         }
+        // refresh the page
+
+        // refresh the expenses list
+        fetchExpenses();
+
+        // window.location.reload();
       }
     } catch (err) {
       console.log(err);
